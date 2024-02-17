@@ -9,18 +9,20 @@
     let ec 
 	let plugins = [TimeGrid]
 	let options = {
-		date: new Date('2024-01-08'),
+		date: new Date(),
+		datesAboveResources: true,
 		view: 'timeGridWeek',
 		allDaySlot: false,
 		hiddenDays: [0, 7],
 		slotDuration: '00:30:00',
-		slotMinTime: '05:00:00',
-		slotMaxTime: '23:00:00',
+		slotMinTime: '06:00:00',
+		slotMaxTime: '22:00:00',
 		slotHeight: 128,
-        height: '100%',
+        height: '70%',
 		titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
         eventBackgroundColor: '#275D38',
-        headerToolbar: {start: '', center: '', end: ''},
+        headerToolbar: {start: 'today, prev next', center: '', end: ''},
+		dayHeaderFormat: { weekday: 'long' },
 		eventSources: [
 			{
 				events: function () {
@@ -32,11 +34,18 @@
 	}
 
 	// filter to only professor specified
-	function filterTheProfessor(event) {
+	function filterTheData(event) {
 		eventList = event.detail.filteredData
 
 		ec.refetchEvents()
 	}
+
+	// filter to only professor specified
+	// function filterTheProfessor(event) {
+	// 	eventList = event.detail.filteredData
+
+	// 	ec.refetchEvents()
+	// }
 
 
 	// // function that resets the calendar to the original state
@@ -49,9 +58,10 @@
 <div class="md:flex md:justify-between">
 	<div class="md:basis-4/12">
 		<h1 class="font-bold text-2xl mb-10 mt-4 text-center">Academic Scheduling Aid</h1>
-		<Filter on:filterProfessor={filterTheProfessor} />
-		<!-- <Filter  /> -->
-		<button class="py-2 w-full rounded-md mt-4 resetCDR" >Reset Calendar</button>
+		<Filter on:filteredData={filterTheData} />
+		<!-- <Filter on:filterProfessor={filterTheProfessor} /> -->
+		
+		
 	</div>
 	
 	<div class="md:basis-8/12 md:ml-4">
@@ -62,18 +72,11 @@
 
 
 <style>
-.resetCDR {
-	border: 1px solid red;
-	color: red;
-}
-.resetCDR:hover {
-	background: red;
-	color: white;
-}
+	.ec {
+		--ec-bg-color: #22272e;
+	}
 </style>
-
-
-
+	
 	
 <!-- /* [{
     id: "1505",

@@ -1,13 +1,15 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte'
-    // import { writeJSON } from './jsonWriter.js'
-    // import { appData } from '../appData.js'
+    import { messageModal, titleModal, showModal, showTwoOptions, showOneOption, progressBarModal, progress, progressBarFinished, progressModal, showImportModal, file } from '../messageModal.js'
+    import Message from '../modal.svelte'
+    import ImportModal from '../importModal.svelte'
 
     const dispatch = createEventDispatcher()
     let selectedFile = {}
     let emptyFile = true
     let existingfile = false
     
+    // closes the import modal
     function closeCSVModal() {
         dispatch('closeCSVModal')
     }
@@ -22,7 +24,7 @@
 
     function handleFileChange(event) {
         // we take the selectedFile variable and set it to the first file in the event target
-        selectedFile = event.target.files[0] // || {}
+        selectedFile = event.target.files[0] 
         // switches the shown text to the file name
         emptyFile = false
         existingfile = true
@@ -31,84 +33,100 @@
        
     }
 
-        
+    // Takes the file that is uploaded and sends it to server 1 (server.ts) to be converted to JSON
     async function insertFileToFilters() {
-        if (selectedFile.name.toLowerCase().endsWith('.csv')  || 
-            selectedFile.name.toLowerCase().endsWith('.xlsx')) {
-            const formData = new FormData()
-            formData.append('file', selectedFile)
+        if (selectedFile && selectedFile.name) {
+            if (selectedFile.name.toLowerCase().endsWith('.csv')) {
+                console.log(selectedFile)
+                progressModal.set(true)
+                progressBarModal.set(true)
+                const formData = new FormData()
+                formData.append('file', selectedFile)
+                file.set(selectedFile.name)
+                
+                progress.set('0')
 
-            fetch('http://localhost:5174/convert', {
-                method: 'POST',
-                body: formData
-            })
 
-            // const res = await fetch('http://localhost:5174');
-            // const data = await res.text();
-            // console.log(data);
-            
-            // console.log(selectedFile)
-            
+                fetch('https://uvu-scheduling-app-server1.vercel.app/convert', {
+                    method: 'POST',
+                    body: formData
+                }) 
+                .then((data) => {
+                    progress.set('full')
+                    console.log(data)
+                })
+                .then(() => {
+                    setTimeout(() => {
+                        progressBarModal.set(false)
+                        progressBarFinished.set(true)
+                    }, 2000)
+                    emptyFile = true
+                    selectedFile = {}
+                })
+
+                
+            } else if (!selectedFile.name.toLowerCase().endsWith('.csv')) {
+                console.log(selectedFile)
+                titleModal.set('Invalid File Type')
+                messageModal.set('The file you uploaded is not a CSV file. Please upload a CSV file and try again.')
+                showImportModal.set(true)
+                emptyFile = true
+                selectedFile = {}
+            }
+        } else {
+            titleModal.set('No File Selected')
+            messageModal.set('No file was detected at import. Please try again.')
+            showImportModal.set(true)
         }
-        
-        emptyFile = true
-        selectedFile = {}
 
-        dispatch('closeCSVModal')
+        // WE NEED TO ALSO ADD IN THE MODAL FOR WHEN SOMEONE PRESSES THE IMPORT BUTTON AND THERE IS NO FILE SELECTED
     }
     
 </script>
 
 
-<!-- <input class="importBTN w-full rounded-md py-2 mb-4 text-center" type="file" on:change={handleFileChange}/> -->
+<Message />
+<ImportModal />
 
-<div class="importCSVComponent p-4 bg-white rounded-md shadow-lg">
-    <h1 class="text-4xl import text-center">Import Data from CSV</h1>
+<div class="w-full h-full flex items-center justify-center">
 
-    <div class="my-56 flex-col">
-        <div class="flex justify-center">
-            <button class="fa-solid fa-upload upload text-4xl text-center p-6" on:click={openFiles}></button>
+    <div class="basis-full border border-primary bg-white rounded-md shadow-md shadow-gray-400 h-5/6 basis-5/6">
+        <div class="h-1/6">
+            <h1 class="text-4xl import text-center mt-4">Import Data from CSV</h1>
         </div>
-        <div class="flex justify-center mt-4">
-            {#if emptyFile}
-                <p class="font-bold">Click to upload CSV file</p>
-            {:else if 
-            /* If the file contains a CSV file or a xlsx file it will display */
-                existingfile && selectedFile.name.toLowerCase().endsWith('.csv') || 
-                selectedFile.name.toLowerCase().endsWith('.xlsx')
-            }
-                <p class="filename font-bold">{selectedFile.name}</p>
-            {:else if existingfile}
-                <p class="font-bold text-red-600">Unable to process this type of file</p>
-            {/if}
+
+        <div class="h-4/6 flex justify-center items-center">
+            <div>
+                <div class="basis-full flex justify-center">
+                    <button class="fa-solid fa-upload border-2 border-primary rounded-full text-primary text-4xl text-center p-6 hover:shadow-md hover:shadow-gray-400 hover:translate-y-[-4px] transition-all duration-300" on:click={openFiles}></button>
+                </div>
+
+                <div class="basis-full flex justify-center mt-4">
+                    {#if emptyFile}
+                        <p class="font-bold">Click to upload CSV file</p>
+                    {:else if existingfile && selectedFile.name.toLowerCase().endsWith('.csv')}
+                        <p class="filename font-bold">{selectedFile.name}</p>
+                    {:else if existingfile}
+                        <p class="font-bold text-red-600">Unable to process this type of file</p>
+                    {/if}
+                </div>
+            </div>
+        </div>
+
+        <div class="h-1/6 flex justify-center items-end">
+            <div class="mb-8">
+                <button class="border-primary border text-primary px-10 py-2 rounded-md hover:bg-primary hover:text-white mr-8" on:click={closeCSVModal}>Cancel</button>
+                <button class="border border-primary bg-primary text-white hover:bg-inherit hover:text-primary px-10 py-2 rounded-md" on:click={insertFileToFilters}>Import</button>
+            </div>
         </div>
     </div>
 
-    <div class="flex justify-end">
-        <button class="cancelBTN text-white px-10 py-2 rounded-md mr-6" on:click={closeCSVModal}>Cancel</button>
-        <button class="uploadBTN text-white px-10 py-2 rounded-md" on:click={insertFileToFilters}>Import</button>
-    </div>
 
-    <!-- <button on:click={closeCSVModal}>Close</button> -->
 </div>
 
-<style>
-    .filename {
-        color: #275D38;
+<!-- <style>
+    progress {
+        display: block;
+        width: 100%;
     }
-    .importCSVComponent {
-        border: 1px solid #275D38;
-    }
-    .upload {
-        color: #275D38;
-        border-radius: 60px;
-        border: 2px solid #275D38;
-    }
-    .uploadBTN {
-        background: #275D38;
-    }
-    .cancelBTN {
-        border: 2px solid #275D38;
-        color: #275D38;
-    }
-</style>
+</style> -->

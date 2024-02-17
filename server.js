@@ -10,7 +10,7 @@ app.use(cors())
 app.use(express.json({ limit: '50mb' })) 
 app.use(express.urlencoded({ extended: true, limit: '50mb' })) 
 
-app.post('/add', async (req, res) => {
+app.post('api/add', async (req, res) => {
     // Read the existing content of FullEventList.json
     let existingData = await readFile('./src/data/FullEventList.json', 'utf-8');
     // let existingList = JSON.parse(existingData);
@@ -23,6 +23,18 @@ app.post('/add', async (req, res) => {
     await writeFile('./src/data/FullEventList.json', JSON.stringify(existingData));
     console.log("part two done")
     res.send({"message": "part two done!"})
+})
+
+app.delete('api/delete', async (req, res) => {
+    await writeFile('./src/data/FullEventList.json', JSON.stringify([]));
+    res.send({"message": "data Removed part 2"})
+    console.log("data Removed part 2")
+})
+
+app.get('api/get', async (req, res) => {
+    const data = await readFile('./src/data/FullEventList.json', 'utf-8');
+    res.send(data)
+    console.log("data sent")
 })
 
 app.listen(port, () => {

@@ -2,6 +2,7 @@
 	import Calendar from './calendar/+page.svelte'
 	import AddClass from './addClass/+page.svelte'
 	import ImportCSV from './importCSV/+page.svelte'
+	import ProgressModal from './progressModal.svelte'
 
 	// function handleMessage(event) {
 	// 	alert(event.detail.text)
@@ -27,27 +28,48 @@
 
 </script>
 
+<div class="">
+	<ProgressModal on:closeCSV={toggleImportModal}/>
+</div>
 
-<div class="p-4 bg-gray-100 static">
+<div class="bg-gray-100 static">
 	{#if addClassModal}
-		<div class="addClassModal absolute right-4 left-4">
+		<div class="z-10 absolute right-4 left-4">
 			<AddClass on:closeModal={toggleModal}/>
 		</div>
 	{/if}
 
 	{#if importCSVModal}
-		<div class="importCSVModal absolute top-4 left-4 right-4">
+		<div class="z-10 absolute h-screen w-full">
 			<ImportCSV on:closeCSVModal={toggleImportModal} />
 		</div>
 	{/if}
 
-	<div>
-		<div class="flex justify-center md:justify-end">
-			<!-- <button on:click={grabServerMessage}>fetch API</button> -->
-			<button class="fa-solid fa-upload upload float-center mr-8" on:click={toggleImportModal}></button>
-			<button class="fa-solid fa-plus plus float-center mr-8" on:click={toggleModal}></button>
-			<button class="fa-solid fa-print printer float-center"></button>
-			<button class="fa-solid fa-file-export export float-center"></button>
+	<div class="p-4">
+		<div class="flex justify-center md:justify-end gap-8">
+			<div class="px-1">
+				<button class="fa-solid fa-file-import text-primary text-3xl pl-2 hover:translate-y-[-4px] transition-all duration-200" on:click={toggleImportModal}></button>
+				<!-- <img src="upload.svg" alt="upload icon" class="w-10 h-10"> -->
+				<h1 class="font-bold text-primary">Import</h1>
+			</div>
+
+			<div class="px-1">
+				<button class="fa-solid fa-circle-plus text-primary text-3xl hover:translate-y-[-4px] hover:shadow-gray-400 transition-all duration-200" on:click={toggleModal}></button>
+				<!-- <img src="add.svg" alt="Plus button called add" class="w-10 h-10"> -->
+				<h1 class="font-bold text-primary">Add</h1>
+			</div>
+			
+			<div class="px-1">
+				<button class="fa-solid fa-print text-primary text-3xl pl-1 hover:translate-y-[-4px] hover:shadow-gray-400 transition-all duration-200"></button>
+				<h1 class="font-bold text-primary">Print</h1>
+			</div>
+			
+			<div class="px-1">
+				<button class="fa-solid fa-file-export text-primary text-3xl pl-2 hover:translate-y-[-4px] hover:shadow-gray-400 transition-all duration-200"></button>
+				<!-- <img src="export.svg" alt="export icon" class="w-10 h-10"> -->
+				<h1 class="font-bold text-primary">Export</h1>
+			</div>
+			
 		</div>
 		
 		<div class="calendar">
@@ -55,40 +77,3 @@
 		</div>
 	</div>
 </div>
-
-
-
-<style>
-	.plus {
-		font-size: 1.5rem;
-		color:white;
-		background: #275D38;
-		padding: .25rem .35rem;
-		border-radius: 16px;
-	}
-	.printer {
-		font-size: 2rem;
-		color:#275D38;
-		margin-right: 2rem;
-	}
-	.export {
-		color: #275D38;
-		font-size: 2rem;
-	}
-	.upload {
-		color: #275D38;
-		font-size: 2rem;
-	}
-	/* .calendarComponent {
-		float: right;
-	} */
-	/* .calendar {
-		max-height: 100vh;
-	} */
-	.addClassModal {
-		z-index: 101;
-	}
-	.importCSVModal {
-		z-index: 100;
-	}
-</style>
