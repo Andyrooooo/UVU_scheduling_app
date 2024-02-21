@@ -3,19 +3,19 @@
 
     "builds": [
         {
-            "src": "/api/main.js",
+            "src": "/src/routes/api/main.js",
             "use": "@vercel/node"
         },
         {
-            "src": "/api/get.js",
+            "src": "/src/routes/api/get.js",
             "use": "@vercel/node"
         },
         {
-            "src": "/api/add.js",
+            "src": "/src/routes/api/add.js",
             "use": "@vercel/node"
         },
         {
-            "src": "/api/delete.js",
+            "src": "/src/routes/api/delete.js",
             "use": "@vercel/node"
         }
     ],
@@ -23,19 +23,19 @@
     "routes": [
         {
             "src": "/",
-            "dest": "/api/main.js"
+            "dest": "/src/routes/api/main.js"
         },
         {
             "src": "/get",
-            "dest": "/api/get.js"
+            "dest": "/src/routes/api/get.js"
         },
         {
             "src": "/add",
-            "dest": "/api/add.js"
+            "dest": "/src/routes/api/add.js"
         },
         {
             "src": "/delete",
-            "dest": "/api/delete.js"
+            "dest": "/src/routes/api/delete.js"
         }
     ]
 }
