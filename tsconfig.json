@@ -10,7 +10,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"allowImportingTsExtensions": true,
-		"module": "commonjs"
+		"module": "commonJS"
 	},
 	"include": [
 		"src/**/*.ts",
