@@ -1,0 +1,41 @@
+{
+    "version": 2,
+
+    "builds": [
+        {
+            "src": "/api/main.js",
+            "use": "@vercel/node"
+        },
+        {
+            "src": "/api/get.js",
+            "use": "@vercel/node"
+        },
+        {
+            "src": "/api/add.js",
+            "use": "@vercel/node"
+        },
+        {
+            "src": "/api/delete.js",
+            "use": "@vercel/node"
+        }
+    ],
+    
+    "routes": [
+        {
+            "src": "/api/main",
+            "dest": "/api/main.js"
+        },
+        {
+            "src": "/api/get",
+            "dest": "/api/get.js"
+        },
+        {
+            "src": "/api/add",
+            "dest": "/api/add.js"
+        },
+        {
+            "src": "/api/delete",
+            "dest": "/api/delete.js"
+        }
+    ]
+}
