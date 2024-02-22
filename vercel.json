@@ -17,6 +17,10 @@
         {
             "src": "/api/delete.js",
             "use": "@vercel/node"
+        },
+        {
+            "src": "/public/(.*)",
+            "use": "@vercel/static"
         }
     ],
     
@@ -36,6 +40,10 @@
         {
             "src": "/api/delete",
             "dest": "/api/delete.js"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/public/$1"
         }
     ]
 }
