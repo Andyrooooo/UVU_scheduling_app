@@ -1,10 +1,11 @@
 import express from 'express'
 import { readFile, writeFile } from 'fs/promises'
 import cors from 'cors'
-
 // import bodyParser from 'body-parser'
 const app = express()
 const port = 5175
+import path from 'path'
+const filePath = path.resolve(__dirname, '..', 'data', 'FullEventList.json')
 
 app.use(cors())
 app.use(express.json({ limit: '50mb' })) 
@@ -12,7 +13,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
 app.post('api/add', async (req, res) => {
     // Read the existing content of FullEventList.json
-    let existingData = await readFile('./src/data/FullEventList.json', 'utf-8');
+    let existingData = await readFile(filePath, 'utf-8');
     // let existingList = JSON.parse(existingData);
 
     // Update the list with new data
@@ -20,19 +21,19 @@ app.post('api/add', async (req, res) => {
     existingData = [...newList];
 
     // Write the updated list back to FullEventList.json
-    await writeFile('./src/data/FullEventList.json', JSON.stringify(existingData));
+    await writeFile(filePath, JSON.stringify(existingData));
     console.log("part two done")
     res.send({"message": "part two done!"})
 })
 
 app.delete('api/delete', async (req, res) => {
-    await writeFile('./src/data/FullEventList.json', JSON.stringify([]));
+    await writeFile(filePath, JSON.stringify([]));
     res.send({"message": "data Removed part 2"})
     console.log("data Removed part 2")
 })
 
 app.get('api/get', async (req, res) => {
-    const data = await readFile('./src/data/FullEventList.json', 'utf-8');
+    const data = await readFile(filePath, 'utf-8');
     res.send(data)
     console.log("data sent")
 })
