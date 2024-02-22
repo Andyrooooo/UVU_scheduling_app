@@ -1,9 +1,6 @@
-import express from 'express'
-const app = express()
-
 import { readFile, writeFile } from 'fs/promises'
 
-app.get('/delete'), async (req, res) => {
+export default async (req, res) => {
     // Read the existing content of FullEventList.json
     let existingData = await readFile('./src/data/FullEventList.json', 'utf-8');
     // let existingList = JSON.parse(existingData);
@@ -17,5 +14,3 @@ app.get('/delete'), async (req, res) => {
     console.log("part two done")
     res.send({"message": "part two done!"})
 }
-
-module.exports = app
